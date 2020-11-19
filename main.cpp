@@ -1,22 +1,31 @@
 #include <iostream>
 #include "graph.cpp"
 
+//Algorytm przeszukiwania A*
 int findPathAStar(std::vector<std::tuple<int, int, int>> graph){
     int cost = 0;
 
     return cost;
 }
 
+//Algorytm przeszukiwania zachłannego - Dijkstra
 int findPathGreedy(std::vector<std::tuple<int, int, int>> graph){
     int cost = 0;
 
     return cost;
 }
 
+//Algorytm przeszukiwania brute-force
 int findPathBruteForce(std::vector<std::tuple<int, int, int>> graph){
     int cost = 0;
 
     return cost;
+}
+
+//Sprawdza czy założenia odnośnie wierzchołków są spełnione (kolejne liczby naturalne)
+//Jeśli nie, usuwa źle wprowadzone dane
+void checkForBadData(){
+
 }
 
 int main(int argc, const char * argv[]) {
@@ -121,6 +130,26 @@ int main(int argc, const char * argv[]) {
 
     for (auto v : vertices){
         std::cout << v << " ";
+    }
+    std::cout <<  '\n';
+
+    //utworzenie macierzy sąsiedztwa
+    int verticesAmount = vertices.size();
+    std::vector<int> matrice;
+    for (int x = 0; x < verticesAmount*verticesAmount; x++){
+        matrice.push_back(-100000);
+    }
+
+    for (auto &v : graph){
+        matrice[(std::get<0>(v)-1)*verticesAmount + (std::get<1>(v)-1)] = std::get<2>(v);
+    }
+
+    //wypisanie macierzy sąsiedztwa
+    for (int i = 0; i < verticesAmount; i++) {
+        for (int j = 0; j < verticesAmount; j++) {
+            std::cout << matrice[i*verticesAmount + j] << "\t";
+        }
+        std::cout << '\n';
     }
 
 
