@@ -24,7 +24,7 @@ int main(int argc, const char * argv[]) {
     std::vector<std::tuple<int, int, int>> graph;
     int startPoint = 0, finishPoint = 0;
 
-    std::ifstream myfile ("graph.txt");
+    std::ifstream myfile ("../graph.txt");
     std::string line;
     std::vector<int> vec = {-1,-1,-1};
 
@@ -97,21 +97,30 @@ int main(int argc, const char * argv[]) {
 
     //wypisywanie wszystkich wierzchołków
     std::vector<int> vertices;
-    std::cout << "Vertices: ";
     for (auto &v : graph){
         if (std::find(vertices.begin(), vertices.end(), std::get<0>(v)) != vertices.end() && !vertices.empty()){
 
         } else {
             vertices.push_back(std::get<0>(v));
-            std::cout << vertices[vertices.size()-1] << " ";
         }
 
         if (std::find(vertices.begin(), vertices.end(), std::get<1>(v)) != vertices.end()){
 
         } else {
             vertices.push_back(std::get<1>(v));
-            std::cout << vertices[vertices.size()-1] << " ";
         }
+    }
+
+    //sortowanie wektora wierzchołków
+    std::sort(vertices.begin(), vertices.end(), [](int a, int b) -> bool
+    {
+        return a < b;
+    });
+
+    std::cout << "Vertices: ";
+
+    for (auto v : vertices){
+        std::cout << v << " ";
     }
 
 
