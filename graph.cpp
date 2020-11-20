@@ -15,7 +15,7 @@ public:
         readGraph();
     }
 
-    void readGraph(/*std::string path, std::vector<std::tuple<int, int, int>> graph*/){
+    static void readGraph(/*std::string path, std::vector<std::tuple<int, int, int>> graph*/){
         std::ofstream myfile;
         myfile.open ("graph.txt");
         myfile << "Writing this to a file.\n";
