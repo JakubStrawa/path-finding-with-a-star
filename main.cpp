@@ -2,14 +2,14 @@
 #include "graph.cpp"
 
 //Algorytm przeszukiwania A*
-int findPathAStar(std::vector<std::tuple<int, int, int>> graph){
+int findPathAStar(const std::vector<std::tuple<int, int, int>>& graph){
     int cost = 0;
 
     return cost;
 }
 
 //Algorytm przeszukiwania zachłannego - Dijkstra
-int findPathGreedy(std::vector<std::tuple<int, int, int>> graph){
+int findPathGreedy(const std::vector<std::tuple<int, int, int>>& graph){
     int cost = 0;
 
     return cost;
@@ -19,39 +19,55 @@ int findPathGreedy(std::vector<std::tuple<int, int, int>> graph){
 int findPathBruteForce(std::vector<int> matrice, int startPoint, int finishPoint, int verticesAmount){
         int source = startPoint - 1;
         std::vector<int> nodes;
+        std::vector<int> path;
 
+        nodes.push_back(finishPoint-1);
+
+        int shortest_path = 100000;
         for(int i=0;i<finishPoint;i++)
         {
-            if(i != source)
+            if (i != source && i != finishPoint-1)
             {
                 nodes.push_back(i);
             }
-        }
-        int n = nodes.size();
-        int shortest_path = 100000;
 
-        while(next_permutation(nodes.begin(),nodes.end()))
-        {
-            /*for(auto v: nodes)
-            {
-                std::cout << v+1 << " ";
-            }*/
-            //std::cout << std::endl;
-            int path_weight = 0;
+            int n = nodes.size();
 
-            int j = source;
-            for (int i = 0; i < n; i++)
-            {
-                path_weight += matrice[j*verticesAmount+nodes[i]];
+            sort(nodes.begin(),nodes.end());
+
+            do{
+                /*for(auto v: nodes)
+                {
+                    std::cout << v+1 << " ";
+                }*/
+                //std::cout << std::endl;
+                int path_weight = 0;
+
+                int j = source;
+                for (int i = 0; i < n; i++) {
+                    path_weight += matrice[j * verticesAmount + nodes[i]];
+                    //std::cout << path_weight << std::endl;
+                    j = nodes[i];
+                }
+
                 //std::cout << path_weight << std::endl;
-                j = nodes[i];
-            }
-
-            //std::cout << path_weight << std::endl;
-            shortest_path = std::min(shortest_path, path_weight);
-            //std::cout << shortest_path << std::endl;
+                shortest_path = std::min(shortest_path, path_weight);
+                if (shortest_path == path_weight)
+                {
+                    path = nodes;
+                }
+                //std::cout << shortest_path << std::endl;
+            } while (next_permutation(nodes.begin(), nodes.end()));
         }
-        return shortest_path;
+
+        std::cout << startPoint;
+
+    for(auto v: path)
+            {
+                std::cout <<"->" << v+1;
+            }
+    std::cout << std::endl;
+    return shortest_path;
 }
 
 //Sprawdza czy założenia odnośnie wierzchołków są spełnione (kolejne liczby naturalne)
@@ -80,7 +96,7 @@ int main(int argc, const char * argv[]) {
                 vec[1] = line[2] - '0';
                 vec[2] = line[4] - '0';
 
-                graph.push_back(std::make_tuple(vec[0], vec[1], vec[2]));
+                graph.emplace_back(vec[0], vec[1], vec[2]);
                 std::cout << line << "/" << vec[0] << "/" << vec[1] << "/" << vec[2] << '\n';
             } else if (line.length() > 5){
                 for (int i = 0; i < line.length()-1; i++) {
@@ -99,7 +115,7 @@ int main(int argc, const char * argv[]) {
                 vec[0] = std::atoi(str1.c_str());
                 vec[1] = std::atoi(str2.c_str());
                 vec[2] = std::atoi(str3.c_str());
-                graph.push_back(std::make_tuple(vec[0], vec[1], vec[2]));
+                graph.emplace_back(vec[0], vec[1], vec[2]);
                 spacePos1 = 0;
                 spacePos2 = 0;
                 std::cout << line << "/" << vec[0] << "/" << vec[1] << "/" << vec[2] << '\n';
