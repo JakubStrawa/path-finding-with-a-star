@@ -1,5 +1,6 @@
 #include <iostream>
 #include "graph.cpp"
+#define INF 10000
 
 //Algorytm przeszukiwania A*
 int findPathAStar(const std::vector<std::tuple<int, int, int>>& graph){
@@ -9,10 +10,75 @@ int findPathAStar(const std::vector<std::tuple<int, int, int>>& graph){
 }
 
 //Algorytm przeszukiwania zachłannego - Dijkstra
-int findPathGreedy(const std::vector<std::tuple<int, int, int>>& graph){
-    int cost = 0;
+int findPathGreedy(int source, int dest, std::vector<int> matrice, int verticesAmount){
+    std::vector<int> visited;
+    std::vector<int> unvisited;
+    // minimal cost i path w wektor std::pair<int,int>
+    std::vector<int> minimalCost;
+    std::vector<int> path;
+    int currentVertice = source;
 
-    return cost;
+    for (int i = 1; i <= verticesAmount; i++){
+        if (i == source){
+            minimalCost.push_back(0);
+            unvisited.push_back(i);
+            path.push_back(0);
+        } else {
+            minimalCost.push_back(INF);
+            unvisited.push_back(i);
+            path.push_back(0);
+        }
+    }
+
+    while(visited.size() != verticesAmount){
+        for (int j = 1; j <= verticesAmount; j++) {
+            if (matrice[(currentVertice - 1)*verticesAmount + j - 1] != INF){
+                if (std::find(unvisited.begin(), unvisited.end(), j) != unvisited.end()
+                    && std::find(visited.begin(), visited.end(), j) != visited.end()){
+                    unvisited.push_back(j);
+                }
+                if (minimalCost[j - 1] > minimalCost[currentVertice - 1] + matrice[(currentVertice - 1)*verticesAmount + j - 1]){
+                    minimalCost[j - 1] = minimalCost[currentVertice - 1] + matrice[(currentVertice - 1)*verticesAmount + j - 1];
+                    path[j-1] = currentVertice;
+                }
+            }
+        }
+        visited.push_back(currentVertice);
+        unvisited.erase(std::find(unvisited.begin(), unvisited.end(), currentVertice));
+        if (!unvisited.empty()){
+            currentVertice = unvisited[0];
+            for (auto v : unvisited){
+                if (minimalCost[v - 1] < minimalCost[currentVertice - 1]){
+                    currentVertice = v;
+                }
+            }
+        }
+
+    }
+
+    std::cout << "Visited: ";
+    for (auto v : visited){
+        std::cout << v << " ";
+    }
+    std::cout << '\n' << "Minimal cost: ";
+    for (auto v : minimalCost){
+        std::cout << v << " ";
+    }
+    std::cout << '\n' << "Path: ";
+    for (auto v : path){
+        std::cout << v << " ";
+    }
+    std::cout << '\n' << "Optimal path: ";
+    currentVertice = dest;
+    while (currentVertice != source){
+        std::cout << currentVertice << " <- ";
+        currentVertice = path[currentVertice - 1];
+    }
+    std:: cout << source;
+    std::cout << '\n';
+
+
+    return minimalCost[dest-1];
 }
 
 //Algorytm przeszukiwania brute-force, złożoność czasowa rzędu n!, złożoność pamięciowa rzędu n^2.
@@ -23,7 +89,7 @@ int findPathBruteForce(std::vector<int> matrice, int startPoint, int finishPoint
 
         nodes.push_back(finishPoint-1);
 
-        int shortest_path = 100000;
+        int shortest_path = INF;
         for(int i=0;i<finishPoint;i++)
         {
             if (i != source && i != finishPoint-1)
@@ -185,7 +251,7 @@ int main(int argc, const char * argv[]) {
     int verticesAmount = vertices.size();
     std::vector<int> matrice;
     for (int x = 0; x < verticesAmount*verticesAmount; x++){
-        matrice.push_back(100001);
+        matrice.push_back(INF);
     }
 
     for (auto &v : graph){
@@ -202,7 +268,8 @@ int main(int argc, const char * argv[]) {
     }
 
 
-    std::cout << findPathBruteForce(matrice, startPoint, finishPoint, verticesAmount) << std::endl;
+    //std::cout << findPathBruteForce(matrice, startPoint, finishPoint, verticesAmount) << std::endl;
+    std::cout << findPathGreedy(startPoint, finishPoint, matrice, verticesAmount);
 
     return 0;
 }
