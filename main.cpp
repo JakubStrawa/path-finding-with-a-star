@@ -2,11 +2,120 @@
 #include "graph.cpp"
 #define INF 10000
 
-//Algorytm przeszukiwania A*
-int findPathAStar(const std::vector<std::tuple<int, int, int>>& graph){
-    int cost = 0;
 
-    return cost;
+// check if cannot connect the same vertice twice and to itself
+// make heap of vertices queues
+
+void h(int dest, std::vector<int> matrice, int verticesAmount, std::vector<int> &heuristicWeight){
+    int currentVertice = dest;
+    int distance = 1;
+    std::vector<int> visited;
+    std::vector<int> unvisited;
+    unvisited.push_back(currentVertice);
+    heuristicWeight[dest - 1] = 0;
+
+    while (!unvisited.empty()){
+        for (int j = verticesAmount - 1; j >= 0; j--) {
+            if (matrice[j * verticesAmount + currentVertice - 1] != INF) {
+                if (heuristicWeight[j] > distance) {
+                    heuristicWeight[j] = distance;
+                }
+                if (std::find(unvisited.begin(), unvisited.end(), (j + 1)) == unvisited.end()
+                    && std::find(visited.begin(), visited.end(), (j + 1)) == visited.end()) {
+                    unvisited.push_back(j + 1);
+                }
+            }
+        }
+        visited.push_back(currentVertice);
+        unvisited.erase(std::find(unvisited.begin(), unvisited.end(), currentVertice));
+        if (!unvisited.empty()){
+            currentVertice = unvisited[0];
+            distance = heuristicWeight[currentVertice - 1] + 1;
+        }
+    }
+
+    std::cout << "Heuristic: " << '\n';
+    for (auto v : heuristicWeight){
+        std::cout <<  v << ", ";
+    }
+}
+
+//Algorytm przeszukiwania A*
+int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAmount){
+    std::vector<int> visited;
+    std::vector<int> unvisited;
+    std::vector<std::pair<int, int>> minimalCost;   // odległość minimalna od początku, odległość + heurystyka h()
+    std::vector<int> path;
+    std::vector<int> heuristicWeight;
+    int currentVertice = source;
+
+    for (int i = 1; i <= verticesAmount; i++){
+        if (i == source){
+            minimalCost.push_back(std::make_pair(0, 0));
+        } else {
+            minimalCost.push_back(std::make_pair(INF, INF));
+        }
+        unvisited.push_back(i);
+        path.push_back(0);
+        heuristicWeight.push_back(INF);
+    }
+
+    h(dest, matrice, verticesAmount, heuristicWeight);
+
+
+    while(currentVertice != dest){
+        for (int j = 1; j <= verticesAmount; j++) {
+            if (matrice[(currentVertice - 1)*verticesAmount + j - 1] != INF){
+                if (std::find(unvisited.begin(), unvisited.end(), j) != unvisited.end()
+                    && std::find(visited.begin(), visited.end(), j) != visited.end()){
+                    unvisited.push_back(j);
+                }
+                if (minimalCost[j - 1].first > minimalCost[currentVertice - 1].first + matrice[(currentVertice - 1)*verticesAmount + j - 1]){
+                    minimalCost[j - 1].first = minimalCost[currentVertice - 1].first + matrice[(currentVertice - 1)*verticesAmount + j - 1];
+                    path[j-1] = currentVertice;
+                    minimalCost[j - 1].second = minimalCost[j - 1].first + heuristicWeight[j  - 1];
+                }
+
+            }
+        }
+        visited.push_back(currentVertice);
+        unvisited.erase(std::find(unvisited.begin(), unvisited.end(), currentVertice));
+        if (!unvisited.empty()){
+            currentVertice = unvisited[0];
+            for (auto v : unvisited){
+                if (minimalCost[v - 1].second < minimalCost[currentVertice - 1].second){
+                    currentVertice = v;
+                }
+            }
+            if (currentVertice == dest){
+                break;
+            }
+        }
+
+    }
+
+    std::cout << "Visited: ";
+    for (auto v : visited){
+        std::cout << v << " ";
+    }
+    std::cout << '\n' << "Minimal cost: ";
+    for (auto v : minimalCost){
+        std::cout << v.first << " ";
+    }
+    std::cout << '\n' << "Path: ";
+    for (auto v : path){
+        std::cout << v << " ";
+    }
+    std::cout << '\n' << "Optimal path: ";
+    currentVertice = dest;
+    while (currentVertice != source){
+        std::cout << currentVertice << " <- ";
+        currentVertice = path[currentVertice - 1];
+    }
+    std:: cout << source;
+    std::cout << '\n';
+
+    return minimalCost[dest - 1].first;
 }
 
 //Algorytm przeszukiwania zachłannego - Dijkstra
@@ -52,8 +161,10 @@ int findPathGreedy(int source, int dest, std::vector<int> matrice, int verticesA
                     currentVertice = v;
                 }
             }
+            if (currentVertice == dest){
+                break;
+            }
         }
-
     }
 
     std::cout << "Visited: ";
@@ -83,55 +194,55 @@ int findPathGreedy(int source, int dest, std::vector<int> matrice, int verticesA
 
 //Algorytm przeszukiwania brute-force, złożoność czasowa rzędu n!, złożoność pamięciowa rzędu n^2.
 int findPathBruteForce(std::vector<int> matrice, int startPoint, int finishPoint, int verticesAmount){
-        int source = startPoint - 1;
-        std::vector<int> nodes;
-        std::vector<int> path;
+    int source = startPoint - 1;
+    std::vector<int> nodes;
+    std::vector<int> path;
 
-        nodes.push_back(finishPoint-1);
+    nodes.push_back(finishPoint-1);
 
-        int shortest_path = INF;
-        for(int i=0;i<finishPoint;i++)
+    int shortest_path = INF;
+    for(int i=0;i<finishPoint;i++)
+    {
+        if (i != source && i != finishPoint-1)
         {
-            if (i != source && i != finishPoint-1)
-            {
-                nodes.push_back(i);
-            }
-
-            int n = nodes.size();
-
-            sort(nodes.begin(),nodes.end());
-
-            do{
-                /*for(auto v: nodes)
-                {
-                    std::cout << v+1 << " ";
-                }*/
-                //std::cout << std::endl;
-                int path_weight = 0;
-
-                int j = source;
-                for (int i = 0; i < n; i++) {
-                    path_weight += matrice[j * verticesAmount + nodes[i]];
-                    //std::cout << path_weight << std::endl;
-                    j = nodes[i];
-                }
-
-                //std::cout << path_weight << std::endl;
-                shortest_path = std::min(shortest_path, path_weight);
-                if (shortest_path == path_weight)
-                {
-                    path = nodes;
-                }
-                //std::cout << shortest_path << std::endl;
-            } while (next_permutation(nodes.begin(), nodes.end()));
+            nodes.push_back(i);
         }
 
-        std::cout << startPoint;
+        int n = nodes.size();
+
+        sort(nodes.begin(),nodes.end());
+
+        do{
+            /*for(auto v: nodes)
+            {
+                std::cout << v+1 << " ";
+            }*/
+            //std::cout << std::endl;
+            int path_weight = 0;
+
+            int j = source;
+            for (int i = 0; i < n; i++) {
+                path_weight += matrice[j * verticesAmount + nodes[i]];
+                //std::cout << path_weight << std::endl;
+                j = nodes[i];
+            }
+
+            //std::cout << path_weight << std::endl;
+            shortest_path = std::min(shortest_path, path_weight);
+            if (shortest_path == path_weight)
+            {
+                path = nodes;
+            }
+            //std::cout << shortest_path << std::endl;
+        } while (next_permutation(nodes.begin(), nodes.end()));
+    }
+
+    std::cout << startPoint;
 
     for(auto v: path)
-            {
-                std::cout <<"->" << v+1;
-            }
+    {
+        std::cout <<"->" << v+1;
+    }
     std::cout << std::endl;
     return shortest_path;
 }
@@ -270,6 +381,7 @@ int main(int argc, const char * argv[]) {
 
     //std::cout << findPathBruteForce(matrice, startPoint, finishPoint, verticesAmount) << std::endl;
     std::cout << findPathGreedy(startPoint, finishPoint, matrice, verticesAmount);
+    std::cout << findPathAStar(startPoint, finishPoint, matrice, verticesAmount);
 
     return 0;
 }
