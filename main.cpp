@@ -451,7 +451,7 @@ int main(int argc, const char * argv[]) {
     for (int k = 0; k < verticesAmount; ++k) {
         heuristicWeight.push_back(INF);
     }
-    h(startPoint, matrice, verticesAmount, heuristicWeight);
+    h(finishPoint, matrice, verticesAmount, heuristicWeight);
 
     start = std::chrono::high_resolution_clock::now();
     std::cout << "A* algorithm: \n" << findPathAStar(startPoint, finishPoint, matrice, verticesAmount, heuristicWeight) << std::endl;
