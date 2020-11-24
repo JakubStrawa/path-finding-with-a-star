@@ -59,11 +59,10 @@ std::vector<std::vector<int>> comb(int N, int K)
     return v1;
 }
 //Algorytm przeszukiwania A*
-int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAmount){
+int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAmount, std::vector<int> heuristicWeight){
     std::vector<int> visited;
     std::vector<int> unvisited;
     std::vector<std::tuple<int, int, int>> minimalCost;   // odległość minimalna od początku, odległość + heurystyka h(), path
-    std::vector<int> heuristicWeight;
     int currentVertice = source;
 
     for (int i = 1; i <= verticesAmount; i++){
@@ -73,10 +72,7 @@ int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAm
         } else {
             minimalCost.push_back(std::make_tuple(INF, INF, 0));
         }
-        heuristicWeight.push_back(INF);
     }
-
-    h(dest, matrice, verticesAmount, heuristicWeight);
 
 
     while(currentVertice != dest){
@@ -437,7 +433,7 @@ int main(int argc, const char * argv[]) {
     }
 
     auto start = std::chrono::high_resolution_clock::now();
-    std::cout << "Brute-force algorithm: \n" << findPathBruteForce(matrice, startPoint, finishPoint, verticesAmount) << std::endl;
+    //std::cout << "Brute-force algorithm: \n" << findPathBruteForce(matrice, startPoint, finishPoint, verticesAmount) << std::endl;
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Time taken by function: "
@@ -450,8 +446,15 @@ int main(int argc, const char * argv[]) {
     std::cout << "Time taken by function: "
               << duration.count() << " microseconds" << std::endl;
 
+    //przeliczenie heurystyki
+    std::vector<int> heuristicWeight;
+    for (int k = 0; k < verticesAmount; ++k) {
+        heuristicWeight.push_back(INF);
+    }
+    h(startPoint, matrice, verticesAmount, heuristicWeight);
+
     start = std::chrono::high_resolution_clock::now();
-    std::cout << "A* algorithm: \n" << findPathAStar(startPoint, finishPoint, matrice, verticesAmount) << std::endl;
+    std::cout << "A* algorithm: \n" << findPathAStar(startPoint, finishPoint, matrice, verticesAmount, heuristicWeight) << std::endl;
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Time taken by function: "
