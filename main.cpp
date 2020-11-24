@@ -36,7 +36,27 @@ void h(int dest, std::vector<int> matrice, int verticesAmount, std::vector<int> 
         std::cout <<  v << ", ";
     }
 }
-
+//Funkcja zwracająca listę kombinacji, przez które musi przejść algorytm Brute Force.
+std::vector<std::vector<int>> comb(int N, int K)
+{
+    std::string bitmask(K, 1);
+    bitmask.resize(N, 0);
+    std::vector<int> v2;
+    std::vector<std::vector<int>> v1;
+    do {
+        for (int i = 0; i < N; ++i)
+        {
+            if (bitmask[i])
+            {
+                v2.push_back(i);
+                //std::cout << " " << i;
+            }
+        }
+        //std::cout << "\n";
+        v1.push_back(v2);
+    } while (std::prev_permutation(bitmask.begin(), bitmask.end()));
+    return v1;
+}
 //Algorytm przeszukiwania A*
 int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAmount){
     std::vector<int> visited;
@@ -192,54 +212,80 @@ int findPathGreedy(int source, int dest, std::vector<int> matrice, int verticesA
 int findPathBruteForce(std::vector<int> matrice, int startPoint, int finishPoint, int verticesAmount){
     int source = startPoint - 1;
     std::vector<int> nodes;
+    std::vector<int> nodes2;
     std::vector<int> path;
-
-    nodes.push_back(finishPoint-1);
+    std::vector<std::vector<int>> v2;
 
     int shortest_path = INF;
-    for(int i=0;i<finishPoint;i++)
+    for(int i=1 ;i<finishPoint;i++)
     {
-        if (i != source && i != finishPoint-1)
+        v2 = comb(finishPoint-1, i);
+        while(!v2.empty())
         {
-            nodes.push_back(i);
+            //std::cout << "number of lines:" << v2.size()/i;
+            for(int m =0;m<v2.size();m++)
+            {
+                nodes2 = v2[m];
+
+                for(int k=0;k<i;k++)
+                {
+                    nodes.push_back(nodes2.back());
+                    nodes2.pop_back();
+                }
+                /*std::cout << "number of lines:" << v2.size()/i;
+                std::cout << "next combination:";
+                for (auto v: nodes) {
+                    std::cout << v + 1 << " ";
+                }
+                std::cout << "\n";*/
+                int n = 0;
+
+                int path_weight = 0;
+                sort(nodes.begin(),nodes.end());
+                //std::cout << "\n";
+                do {
+                    nodes.push_back(finishPoint - 1);
+                    /*for (auto v: nodes) {
+                        std::cout << v + 1 << " ";
+                    }*/
+
+                    //std::cout << "\n";
+                    int j = source;
+                    n = nodes.size();
+                    for (int i = 0; i < n; i++) {
+                        path_weight += matrice[j * verticesAmount + nodes[i]];
+                        //std::cout << path_weight << std::endl;
+                        j = nodes[i];
+                        if (path_weight >= 10000)
+                        {
+                            //nodes.pop_back();
+                            break;
+                        }
+                    }
+
+                    //std::cout << path_weight << std::endl;
+                    shortest_path = std::min(shortest_path, path_weight);
+                    if (shortest_path == path_weight) {
+                        path = nodes;
+                    }
+                    //std::cout << "shortest: " << shortest_path << std::endl;
+                    nodes.pop_back();
+                    path_weight = 0;
+                } while(std::next_permutation(nodes.begin(), nodes.end()));
+
+                nodes.clear();
+            }
+            v2.clear();
         }
 
-        int n = nodes.size();
-
-        sort(nodes.begin(),nodes.end());
-
-        do{
-            /*for(auto v: nodes)
-            {
-                std::cout << v+1 << " ";
-            }*/
-            //std::cout << std::endl;
-            int path_weight = 0;
-
-            int j = source;
-            for (int i = 0; i < n; i++) {
-                path_weight += matrice[j * verticesAmount + nodes[i]];
-                //std::cout << path_weight << std::endl;
-                j = nodes[i];
-            }
-
-            //std::cout << path_weight << std::endl;
-            shortest_path = std::min(shortest_path, path_weight);
-            if (shortest_path == path_weight)
-            {
-                path = nodes;
-            }
-            //std::cout << shortest_path << std::endl;
-        } while (next_permutation(nodes.begin(), nodes.end()));
     }
 
-    std::cout << startPoint;
-
+    std::cout << "Optimal path: " << startPoint;
     for(auto v: path)
     {
-        std::cout <<"->" << v+1;
+        std::cout <<" -> " << v+1;
     }
-    std::cout << std::endl;
+    std::cout << "\n";
     return shortest_path;
 }
 
