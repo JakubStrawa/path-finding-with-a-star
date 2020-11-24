@@ -73,7 +73,6 @@ int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAm
         } else {
             minimalCost.push_back(std::make_tuple(INF, INF, 0));
         }
-        //unvisited.push_back(i);
         heuristicWeight.push_back(INF);
     }
 
@@ -91,7 +90,7 @@ int findPathAStar(int source, int dest, std::vector<int> matrice, int verticesAm
                 if (std::get<0>(minimalCost[j - 1]) > std::get<0>(minimalCost[currentVertice - 1]) + matrice[(currentVertice - 1)*verticesAmount + j - 1]){
                     std::get<0>(minimalCost[j - 1]) = std::get<0>(minimalCost[currentVertice - 1]) + matrice[(currentVertice - 1)*verticesAmount + j - 1];
                     std::get<2>(minimalCost[j - 1]) = currentVertice;
-                    std::get<1>(minimalCost[j - 1]) = std::get<0>(minimalCost[currentVertice - 1]) + heuristicWeight[j  - 1];
+                    std::get<1>(minimalCost[j - 1]) = std::get<0>(minimalCost[j - 1]) + heuristicWeight[j  - 1];
                 }
 
             }
@@ -177,9 +176,10 @@ int findPathGreedy(int source, int dest, std::vector<int> matrice, int verticesA
                     currentVertice = v;
                 }
             }
+            /*
             if (currentVertice == dest){
                 break;
-            }
+            } */
         }
 
     }
@@ -441,7 +441,7 @@ int main(int argc, const char * argv[]) {
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Time taken by function: "
-         << duration.count() << " microseconds" << std::endl;
+              << duration.count() << " microseconds" << std::endl;
 
     start = std::chrono::high_resolution_clock::now();
     std::cout << "Greedy algorithm: \n" << findPathGreedy(startPoint, finishPoint, matrice, verticesAmount) << std::endl;
