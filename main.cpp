@@ -1,5 +1,6 @@
 #include <iostream>
 #include "graph.cpp"
+#include <chrono>
 #define INF 10000
 
 //Heurystyka h(), która określa liczbę krawędzi pomiędzy wszystkimi wierzchołkami, a wierzchołkiem końcowym
@@ -435,10 +436,26 @@ int main(int argc, const char * argv[]) {
         std::cout << '\n';
     }
 
-
+    auto start = std::chrono::high_resolution_clock::now();
     std::cout << "Brute-force algorithm: \n" << findPathBruteForce(matrice, startPoint, finishPoint, verticesAmount) << std::endl;
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: "
+         << duration.count() << " microseconds" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
     std::cout << "Greedy algorithm: \n" << findPathGreedy(startPoint, finishPoint, matrice, verticesAmount) << std::endl;
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: "
+              << duration.count() << " microseconds" << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
     std::cout << "A* algorithm: \n" << findPathAStar(startPoint, finishPoint, matrice, verticesAmount) << std::endl;
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: "
+              << duration.count() << " microseconds" << std::endl;
 
     return 0;
 }
