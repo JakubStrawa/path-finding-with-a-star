@@ -3,4 +3,4 @@ project(path-finding-with-a-star2)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(path-finding-with-a-star2 main.cpp)
+add_executable(pathfinding_with_A_star main.cpp)

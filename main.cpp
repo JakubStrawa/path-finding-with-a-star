@@ -10,7 +10,7 @@ int main(int argc, const char * argv[]) {
     std::vector<int> matrix;
     int startPoint = 0, finishPoint = 0, verticesAmount = 0;
 
-    std::string graphFilePath = "../graph.txt";
+    std::string graphFilePath = "graph.txt";
 
     readGraph(startPoint, finishPoint, graph, graphFilePath);
 
