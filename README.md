@@ -1,5 +1,5 @@
 Projekt na przedmiot PSZT implementujący i badający algorytm A*, zachłanny i brute force dla zadania znalezienia ścieżki o najmniejszej wadze od punktu A do B.
-Krótka instrukcja:
+#### Krótka instrukcja:
 1. Sklonuj repozytorium na swój komputer
 2. Wykonaj komendę: "cmake [ścieżka do katalogu z plikami]" na przykład:
     "cmake ." (Będąc w katalogu z plikami)
