@@ -202,13 +202,15 @@ int findPathBruteForce(std::vector<int> matrix, int startPoint, int finishPoint,
     for(int i=1 ;i<finishPoint;i++)
     {
         v2 = comb(finishPoint-1, i);
+
         while(!v2.empty())
         {
+            nodes2 = v2[v2.size()-1];
+            if(nodes2.back() == -1) return -1;
             //std::cout << "number of lines:" << v2.size()/i;
             for(int m =0;m<v2.size();m++)
             {
                 nodes2 = v2[m];
-
                 for(int k=0;k<i;k++)
                 {
                     nodes.push_back(nodes2.back());
@@ -279,10 +281,13 @@ int findPathBruteForce(std::vector<int> matrix, int startPoint, int finishPoint,
 
 std::vector<std::vector<int>> comb(int N, int K)
 {
+    auto start = std::chrono::steady_clock::now();
+    auto stop = std::chrono::steady_clock::now();
     std::string bitmask(K, 1);
     bitmask.resize(N, 0);
     std::vector<int> v2;
     std::vector<std::vector<int>> v1;
+
     do {
         for (int i = 0; i < N; ++i)
         {
@@ -292,8 +297,18 @@ std::vector<std::vector<int>> comb(int N, int K)
                 //std::cout << " " << i;
             }
         }
+        stop = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed = stop-start;
+        //std::cout << elapsed.count();
+        if(elapsed.count() > 3)
+        {
+            v2.push_back(-1);
+            v1.push_back(v2);
+            break;
+        }
         //std::cout << "\n";
         v1.push_back(v2);
     } while (std::prev_permutation(bitmask.begin(), bitmask.end()));
+
     return v1;
 }
