@@ -3,7 +3,8 @@
 1. Sklonuj repozytorium na swój komputer
 2. Wykonaj komendę: "cmake [ścieżka do katalogu z plikami]" na przykład:
     "cmake ." (Będąc w katalogu z plikami)
-    "cmake path-finding-with-a-star"
+    lub komendę: "cmake -S [katalog ze źródłami] -B [katalog gdzie ma zostać zbudowana aplikacja]"
+    "cmake -S path-finding-with-a-star-master -B path-finding-with-a-star-master" (Będąc w katalogu nadrzędnym)
 3. Wykonaj komendę: "make" (w katalogu z plikami)
 4. Uruchom program:
     - pathfinding_with_A_star (dla gałęzi master)
