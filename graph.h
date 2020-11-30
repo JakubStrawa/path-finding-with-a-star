@@ -2,13 +2,15 @@
 // Created by Jakub Strawa on 11/19/20.
 //
 
+#include <vector>
+
 #ifndef PATHFINDING_A_GRAPH_H
 #define PATHFINDING_A_GRAPH_H
 
 #endif //PATHFINDING_A_GRAPH_H
 
 //Wczytywanie grafu z pliku txt
-void readGraph(int &startPoint, int &finishPoint, std::vector<std::tuple<int, int, int>> &graph, std::string path);
+void readGraph(int &startPoint, int &finishPoint, std::vector<std::tuple<int, int, int>> &graph,const std::string& path);
 
 //sortowanie wierzchołków
 void sortGraph(std::vector<std::tuple<int, int, int>> &graph);

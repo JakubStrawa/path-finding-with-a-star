@@ -9,7 +9,7 @@
 #include <algorithm>
 
 
-void readGraph(int &startPoint, int &finishPoint, std::vector<std::tuple<int, int, int>> &graph, std::string path){
+void readGraph(int &startPoint, int &finishPoint, std::vector<std::tuple<int, int, int>> &graph, const std::string& path){
     std::vector<int> vec = {-1,-1,-1};
     std::ifstream myfile (path);
     std::string line;
