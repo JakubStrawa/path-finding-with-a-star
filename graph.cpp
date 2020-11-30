@@ -13,7 +13,7 @@ void readGraph(int &startPoint, int &finishPoint, std::vector<std::tuple<int, in
     std::vector<int> vec = {-1,-1,-1};
     std::ifstream myfile (path);
     std::string line;
-
+    std::cout << path;
     //wczytywanie grafu i punktów A oraz B
     if (myfile.is_open()) {
 
@@ -62,7 +62,6 @@ void readGraph(int &startPoint, int &finishPoint, std::vector<std::tuple<int, in
         myfile.close();
         std::cout << "from: " << startPoint << " to: " << finishPoint << '\n';
     }
-
     std::cout << graph.size() << '\n';
 }
 

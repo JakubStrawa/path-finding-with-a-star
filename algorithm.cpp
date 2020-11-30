@@ -2,6 +2,7 @@
 // Created by Jakub Strawa on 11/29/20.
 //
 
+#include <chrono>
 #include "algorithm.h"
 
 
@@ -194,6 +195,8 @@ int findPathBruteForce(std::vector<int> matrix, int startPoint, int finishPoint,
     std::vector<int> nodes2;
     std::vector<int> path;
     std::vector<std::vector<int>> v2;
+    auto start = std::chrono::steady_clock::now();
+    auto stop = std::chrono::steady_clock::now();
 
     int shortest_path = INF;
     for(int i=1 ;i<finishPoint;i++)
@@ -250,11 +253,16 @@ int findPathBruteForce(std::vector<int> matrix, int startPoint, int finishPoint,
                     //std::cout << "shortest: " << shortest_path << std::endl;
                     nodes.pop_back();
                     path_weight = 0;
+                    stop = std::chrono::steady_clock::now();
+                    std::chrono::duration<double> elapsed = stop-start;
+                    //std::cout << elapsed.count();
+                    if(elapsed.count() > 3) return -1;
                 } while(std::next_permutation(nodes.begin(), nodes.end()));
 
                 nodes.clear();
             }
             v2.clear();
+
         }
 
     }
